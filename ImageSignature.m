@@ -80,53 +80,8 @@ typedef enum
             break;
     }
     
-    UIImage *image = [self getImage];
-    if (image == nil)
-    {
-        NSLog(@"Image - image: could not create image from %@", _localId);
-        if (delegate != nil)
-        {
-            [delegate onImage:nil
-               withIdentifier:_localId];
-        }
-        return nil;
-    }
-    
-    CGImageRef currentImageRef = image.CGImage;
-    if (currentImageRef == NULL)
-    {
-        NSLog(@"Image - image: could not read CGImage property of image from %@", _localId);
-        if (delegate != nil)
-        {
-            [delegate onImage:nil
-               withIdentifier:_localId];
-        }
-        return nil;
-    }
-    
-    // Size computing
-    size_t resizedWidth = CGImageGetWidth(currentImageRef);
-    size_t resizedHeight = CGImageGetHeight(currentImageRef);
-    size_t longestDimension = MAX(resizedWidth, resizedHeight);
-    if (longestDimension > requestedSize)
-    {
-        float ratio = (float) longestDimension / (float) requestedSize;
-        resizedWidth = floor(resizedWidth / ratio);
-        resizedHeight = floor(resizedHeight / ratio);
-    }
-    
-    // Resize
-    CGContextRef context = CGBitmapContextCreate(nil, resizedWidth, resizedHeight,
-                                                 CGImageGetBitsPerComponent(currentImageRef),
-                                                 CGImageGetBytesPerRow(currentImageRef),
-                                                 CGImageGetColorSpace(currentImageRef),
-                                                 CGImageGetBitmapInfo(currentImageRef));
-    CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
-    CGContextDrawImage(context, CGRectMake(0, 0, resizedWidth, resizedHeight), currentImageRef);
-    CGImageRef resizedImageRef = CGBitmapContextCreateImage(context);
-    UIImage *resizedImage = [UIImage imageWithCGImage:resizedImageRef];
-    CFRelease(resizedImageRef);
-    CFRelease(context);
+    //resizing image
+    UIImage *resizedImage = [self resizeImage:[self getImage] atSize:requestedSize withDelegate:delegate];
     
     if (delegate != nil)
     {
@@ -255,5 +210,58 @@ typedef enum
     }
     return imageData;
 }
+
+- (UIImage*)resizeImage:(nonnull UIImage*)image atSize:(float)requestedSize withDelegate:(__nullable id<ImageSignatureDelegate>)delegate{
+    
+    if (image == nil)
+    {
+        NSLog(@"Image - image: could not create image from %@", _localId);
+        if (delegate != nil)
+        {
+            [delegate onImage:nil
+               withIdentifier:_localId];
+        }
+        return nil;
+    }
+    
+    CGImageRef currentImageRef = image.CGImage;
+    if (currentImageRef == NULL)
+    {
+        NSLog(@"Image - image: could not read CGImage property of image from %@", _localId);
+        if (delegate != nil)
+        {
+            [delegate onImage:nil
+               withIdentifier:_localId];
+        }
+        return nil;
+    }
+    
+    // Size computing
+    size_t resizedWidth = CGImageGetWidth(currentImageRef);
+    size_t resizedHeight = CGImageGetHeight(currentImageRef);
+    size_t longestDimension = MAX(resizedWidth, resizedHeight);
+    if (longestDimension > requestedSize)
+    {
+        float ratio = (float) longestDimension / (float) requestedSize;
+        resizedWidth = floor(resizedWidth / ratio);
+        resizedHeight = floor(resizedHeight / ratio);
+    }
+    
+    // Resize
+    CGContextRef context = CGBitmapContextCreate(nil, resizedWidth, resizedHeight,
+                                                 CGImageGetBitsPerComponent(currentImageRef),
+                                                 CGImageGetBytesPerRow(currentImageRef),
+                                                 CGImageGetColorSpace(currentImageRef),
+                                                 CGImageGetBitmapInfo(currentImageRef));
+    CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
+    CGContextDrawImage(context, CGRectMake(0, 0, resizedWidth, resizedHeight), currentImageRef);
+    CGImageRef resizedImageRef = CGBitmapContextCreateImage(context);
+    UIImage *resizedImage = [UIImage imageWithCGImage:resizedImageRef];
+    CFRelease(resizedImageRef);
+    CFRelease(context);
+    
+    return resizedImage;
+}
+
 
 @end

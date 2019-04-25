@@ -31,4 +31,5 @@
 - (void)base64Image:(CGFloat)requestedSize
        withDelegate:(__nonnull id<ImageSignatureDelegate>)delegate;
 - (NSData*)saveImage:(nonnull UIImage*)image compressRate:(int)compressRate;
+- (UIImage*)resizeImage:(nonnull UIImage*)image atSize:(float)requestedSize withDelegate:(__nullable id<ImageSignatureDelegate>)delegate;
 @end

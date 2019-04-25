@@ -29,6 +29,12 @@
     signatureviewController.delegate = self;
     
     if (action != nil && [action isEqualToString:@"sign"]) {
+        if (data != nil) {
+            id size = data[@"size"];
+            if (size != nil && [size isKindOfClass:[NSNumber class]]) {
+                signatureviewController.requestedSize = [data[@"size"] floatValue];
+            }
+        }
         [_viewController.navigationController presentViewController:navigationController animated:YES completion:nil];
     }
 }

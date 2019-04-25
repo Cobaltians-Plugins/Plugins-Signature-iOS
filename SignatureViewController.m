@@ -144,9 +144,12 @@
         NSString *documentsDirectory = [paths objectAtIndex:0];
         ImageSignature *image = [[ImageSignature alloc] initWithDirectory:documentsDirectory Extension:@".jpg"];
         
+        //Resizing
+        SavedImage = [image resizeImage:SavedImage atSize:_requestedSize withDelegate:nil];
+        
         //Save Signature as file .jpg
         NSData *imageData = [image saveImage:SavedImage compressRate:100];
-
+        
         
         //Save bitmap in base64
         NSString *base64 = [imageData base64EncodedStringWithOptions:0];
