@@ -8,7 +8,6 @@
 
 #import "SignaturePlugin.h"
 #import "SignatureViewController.h"
-#import "Image.h"
 #import <Cobalt/PubSub.h>
 
 @implementation SignaturePlugin
