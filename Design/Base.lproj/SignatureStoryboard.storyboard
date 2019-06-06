@@ -120,11 +120,13 @@
                     </view>
                     <navigationItem key="navigationItem" id="cvi-T0-S1r">
                         <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="BBz-tr-h1W">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
                                 <action selector="onCancel:" destination="Who-eO-iN9" id="Mk5-KP-NOD"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="save" id="fzX-kr-cOe">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
                                 <action selector="onOK:" destination="Who-eO-iN9" id="TU5-vz-3PM"/>
                             </connections>

@@ -8,12 +8,10 @@
 
 #import "SignatureViewController.h"
 
-#import "ImageSignature.h"
-#import "PlaceAnnotation.h"
+#import <Cobalt/Image.h>
 #import <Cobalt/Cobalt.h>
 
 @interface SignatureViewController() {
-    PlaceAnnotation *_annotation;
     __weak IBOutlet UIImageView *SignatureImage;
 }
 
@@ -142,11 +140,14 @@
         //Defining directory and filepath
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSString *documentsDirectory = [paths objectAtIndex:0];
-        ImageSignature *image = [[ImageSignature alloc] initWithDirectory:documentsDirectory Extension:@".jpg"];
+        Image *image = [[Image alloc] initWithDirectory:documentsDirectory Extension:@".jpg"];
+        
+        //Resizing
+        SavedImage = [image resizeImage:SavedImage atSize:_requestedSize withDelegate:nil];
         
         //Save Signature as file .jpg
         NSData *imageData = [image saveImage:SavedImage compressRate:100];
-
+        
         
         //Save bitmap in base64
         NSString *base64 = [imageData base64EncodedStringWithOptions:0];

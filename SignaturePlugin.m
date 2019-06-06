@@ -8,22 +8,32 @@
 
 #import "SignaturePlugin.h"
 #import "SignatureViewController.h"
-#import "Image.h"
+#import <Cobalt/PubSub.h>
 
 @implementation SignaturePlugin
 
-- (void)onMessageFromCobaltController:(CobaltViewController *)viewController andData: (NSDictionary *)message {
+- (void)onMessageFromWebView:(WebViewType)webView
+          inCobaltController:(nonnull CobaltViewController *)viewController
+                  withAction:(nonnull NSString *)action
+                        data:(nullable NSDictionary *)data
+          andCallbackChannel:(nullable NSString *)callbackChannel
+{
     NSLog(@"SignaturePlugin - onMessageFromCobaltController: Entering...");
     _viewController = viewController;
-    _callback = [message objectForKey:kJSCallback];
+    _callback = callbackChannel;
     
     UIStoryboard *signatureStoryboard = [UIStoryboard storyboardWithName:@"SignatureStoryboard" bundle:[NSBundle mainBundle]];
     UINavigationController *navigationController = [signatureStoryboard instantiateInitialViewController];
     SignatureViewController *signatureviewController = navigationController.viewControllers[0];
     signatureviewController.delegate = self;
     
-    NSString *action = [message objectForKey:kJSAction];
     if (action != nil && [action isEqualToString:@"sign"]) {
+        if (data != nil) {
+            id size = data[@"size"];
+            if (size != nil && [size isKindOfClass:[NSNumber class]]) {
+                signatureviewController.requestedSize = [data[@"size"] floatValue];
+            }
+        }
         [_viewController.navigationController presentViewController:navigationController animated:YES completion:nil];
     }
 }
@@ -37,7 +47,8 @@
     
     NSDictionary *data = (id != nil) ? @{@"id": id,@"picture": base64} : @{};
     
-    [_viewController sendCallback:_callback withData:data];
+    [[PubSub sharedInstance] publishMessage:data
+                                  toChannel:_callback];
     
     [_viewController.navigationController dismissViewControllerAnimated:YES completion:nil];
 }

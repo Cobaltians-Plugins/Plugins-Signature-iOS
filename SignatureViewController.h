@@ -30,7 +30,7 @@
 - (IBAction)btnClear:(id)sender;
 
 @property (assign, nonatomic) NSString *base64;
-@property (strong, nonatomic) NSString *id;
+@property (assign, nonatomic) float requestedSize;
 @property (weak, nonatomic) id<SignatureDelegate> delegate;
 
 @end
